@@ -35,9 +35,11 @@ datW <-read.csv("y:\\Students\\hkropp\\a02\\2011124.csv")
 #Get more information about the data frame
 str(datW)
 
-########QUESTION 1#########
-#How many rows and columns are in this dataset?#
-#There are 9 columns and 157849 rows#
+########QUESTION 1##############################
+#How many rows and columns are in this dataset?
+#There are 9 columns and 157849 rows
+
+#####CONTINUING ON##############################
 
 #specify a colun with a proper date format
 datW$dateF <- as.Date(datW$DATE, "%Y-%m-%d")
@@ -47,11 +49,13 @@ str(datW)
 #ensure it as as a number
 datW$year <- as.numeric(format(datW$dateF,"%Y"))
 
-#######QUESTION 2#########
+#######QUESTION 2##############################
 #Using your textbook or online R resources,
 #describe the difference between character, numeric,
 #integer, and factor data. Create an example vector
 #of each data type with 5 objects in it
+
+######CONTINUING ON #######
 
 #find out all unique site names
 levels(datW$NAME)
@@ -94,10 +98,12 @@ hist(datW$TAVE[datW$siteN == 1],
      col="grey50",
      border="white")
 
-##########QUESTION 3##########
+##########QUESTION 3###################
 #Using help(hist) and help(paste) look up all of the arguments in my
 #hist function above. Describe what each argument is doign in the hist
 #function above
+
+######## CONTINUING ON ################
 
 #creating the same histogram but with lines for mean and sd
 hist(datW$TAVE[datW$siteN == 1],
@@ -132,3 +138,103 @@ abline(v = mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE)
 #use different colors for bars, add them all into the same window
 #using par(mfrow=c(2,2)) before you run the code that makes all 4 histograms
 
+########CONTINUING ON###########
+
+#Creating histogram for first site
+h1 <- hist(datW$TAVE[datW$siteN == 1],
+           freq = FALSE,
+           main = paste(levels(datW$NAME)[1]),
+           xlab = "Average Daily Temperature (Degrees C)",
+           ylab = "Relative Frequency",
+           col = "grey50",
+           border = "white")
+
+##########plotting the normal curve##
+
+#Generating a sequence of numbers to plot the normal curve across the range
+#Creates the x coordinates
+x.plot <-seq(-10,30, length.out = 100)
+
+#dnorm produces probability density based on the 2 parameters: xbar and sd
+y.plot <- dnorm(seq(-10,30, length.out = 100),
+                mean(datW$TAVE[datW$siteN == 1], na.rm = TRUE),
+                sd(datW$TAVE[datW$siteN == 1], na.rm = TRUE))
+
+#creates a density saled to fit the plot
+#puts multiple thins on hte same plot
+#Maximum value is the same between the two datasets on the plot
+#creates the y coordinates
+y.scaled <- (max(h1$density)/max(y.plot)) *y.plot
+
+#points function adds points or lines
+points(x.plot,
+       y.scaled,
+       type = "l",
+       col = "royalblue3",
+       lwd = 4,
+       lty = 2)
+
+######## QUESTION 5 #################
+#Refer to the histograms you made in question 4,
+#Does daily air temperature look like it is normally
+#distributed at all sites?
+
+###### continuing on ################
+
+help(dnorm)
+#dnorm used for probability densit
+#pnorm returns vector for probability below q
+#qnorm returns the value associated wtih a possibility
+
+#probability of all average temperature below 0
+pnorm(0,
+      mean(datW$TAVE[datW$siteN == 1], na.rm = TRUE),
+      sd(datW$TAVE[datW$siteN == 1], na.rm = TRUE))
+
+#probability of all average temperature below 5
+pnorm(5,
+      mean(datW$TAVE[datW$siteN == 1], na.rm = TRUE),
+      sd(datW$TAVE[datW$siteN == 1], na.rm = TRUE))
+
+#pnorm with 5 HERE gives you all probability from 0-5
+(pnorm(5,
+      mean(datW$TAVE[datW$siteN == 1], na.rm = TRUE),
+      sd(datW$TAVE[datW$siteN == 1], na.rm = TRUE))- pnorm(0,
+      mean(datW$TAVE[datW$siteN == 1], na.rm = TRUE),
+      sd(datW$TAVE[datW$siteN == 1], na.rm = TRUE)))
+
+#pnorm with 20 is probability below 20, subtracting from 1 does area above 20
+1 - pnorm(20,
+          mean(datW$TAVE[datW$siteN == 1], na.rm = TRUE),
+          sd(datW$TAVE[datW$siteN == 1], na.rm = TRUE))
+
+#qnorm returns the exact probability
+#using a data of 0.95 makes you observe probability of an unusually high temp
+qnorm(0.95,
+      mean(datW$TAVE[datW$siteN == 1], na.rm = TRUE),
+      sd(datW$TAVE[datW$siteN == 1], na.rm = TRUE))
+
+###### QUESTION 6 ######################
+#Assume CC increases mean temp by 4 degrees C in Aberdeen,
+#but the standard deviation stays the same as current climate.
+#How often do you expect to observe temperatures greater than the
+#current threshold for extreme high temperatures?
+
+##### QUESTION 7 ######################
+#Make ah ist of daily precipitation for Aberdeen. This is an example of a data distribution
+#that isn't normla. Look up exponential, beta, and gamma distribution using the internet.
+#Look at the range of values these descriptions can describe. Would any of these
+#distributions describe the shape of daily precipitation data?
+
+##### QUESTION 8 #####################
+#Use the sum function to get precipitation for each year and site in the data
+#Choose one site and make a histogram of annual precipitation. 
+#Describe the general shape of the data and whether you think it is normally distributed
+
+##### QUESTION 9 ####################
+#Get the mean of annual precipitation for all sites. Compare to the mean
+#annual temperatures you calculated earlier. In general terms,
+#describe how the climate varies between sites.
+
+#### QUESTION 10 ####################
+#What's the GitHub link to your script for this activity?
