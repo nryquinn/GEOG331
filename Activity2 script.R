@@ -55,6 +55,18 @@ datW$year <- as.numeric(format(datW$dateF,"%Y"))
 #integer, and factor data. Create an example vector
 #of each data type with 5 objects in it
 
+Character = c("a", "b", "c", "d", "e", "f")
+str(Character)
+
+Numeric = c(1,2,3,4,5)
+str(Numeric)
+
+Integer = as.integer(Numeric)
+str(Integer)
+
+Factor = as.factor(c("First Year", "Sophomore", "Junior", "Senior", "Super Senior"))
+str(Factor)
+
 ######CONTINUING ON #######
 
 #find out all unique site names
@@ -103,6 +115,9 @@ hist(datW$TAVE[datW$siteN == 1],
 #hist function above. Describe what each argument is doign in the hist
 #function above
 
+help(hist)
+help(paste)
+
 ######## CONTINUING ON ################
 
 #creating the same histogram but with lines for mean and sd
@@ -137,6 +152,109 @@ abline(v = mean(datW$TAVE[datW$siteN == 1],na.rm=TRUE)
 #include SD and Mean
 #use different colors for bars, add them all into the same window
 #using par(mfrow=c(2,2)) before you run the code that makes all 4 histograms
+
+par(mfrow = c(2,2))
+
+###Site 2###
+hist(datW$TAVE[datW$siteN == 2],
+    freq=FALSE, 
+    main = paste(levels(datW$NAME)[2]),
+    xlab = "Average daily temperature (degrees C)", 
+    ylab="Relative frequency",
+    col="grey60",
+    border="white")
+#Adding the Mean line
+abline(v = mean(datW$TAVE[datW$siteN ==2], na.rm =TRUE),
+       col = "tomato3",
+       lwd = 3)
+#Adding SD Below
+abline(v = mean(datW$TAVE[datW$siteN == 2], na.rm = TRUE)
+       -sd(datW$TAVE[datW$siteN == 2], na.rm = TRUE),
+       col = "tomato3",
+       lty = 3,
+       lwd = 3)
+#Adding SD Above
+abline(v = mean(datW$TAVE[datW$siteN == 2],na.rm=TRUE)
+       + sd(datW$TAVE[datW$siteN == 2],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+
+###Site 3###
+hist(datW$TAVE[datW$siteN == 3],
+     freq=FALSE, 
+     main = paste(levels(datW$NAME)[3]),
+     xlab = "Average daily temperature (degrees C)", 
+     ylab="Relative frequency",
+     col="blue50",
+     border="white")
+#Adding the Mean line
+abline(v = mean(datW$TAVE[datW$siteN ==3], na.rm =TRUE),
+       col = "tomato3",
+       lwd = 3)
+#Adding SD Below
+abline(v = mean(datW$TAVE[datW$siteN == 3], na.rm = TRUE)
+       -sd(datW$TAVE[datW$siteN == 3], na.rm = TRUE),
+       col = "tomato3",
+       lty = 3,
+       lwd = 3)
+#Adding SD Above
+abline(v = mean(datW$TAVE[datW$siteN == 3],na.rm=TRUE)
+       + sd(datW$TAVE[datW$siteN == 3],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+
+###Site 4###
+hist(datW$TAVE[datW$siteN == 4],
+     freq=FALSE, 
+     main = paste(levels(datW$NAME)[4]),
+     xlab = "Average daily temperature (degrees C)", 
+     ylab="Relative frequency",
+     col="green50",
+     border="white")
+#Adding the Mean line
+abline(v = mean(datW$TAVE[datW$siteN ==4], na.rm =TRUE),
+       col = "tomato3",
+       lwd = 3)
+#Adding SD Below
+abline(v = mean(datW$TAVE[datW$siteN == 4], na.rm = TRUE)
+       -sd(datW$TAVE[datW$siteN == 4], na.rm = TRUE),
+       col = "tomato3",
+       lty = 3,
+       lwd = 3)
+#Adding SD Above
+abline(v = mean(datW$TAVE[datW$siteN == 4],na.rm=TRUE)
+       + sd(datW$TAVE[datW$siteN == 4],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+
+###Site 5###
+hist(datW$TAVE[datW$siteN == 5],
+     freq=FALSE, 
+     main = paste(levels(datW$NAME)[5]),
+     xlab = "Average daily temperature (degrees C)", 
+     ylab="Relative frequency",
+     col="yellow50",
+     border="white")
+#Adding the Mean line
+abline(v = mean(datW$TAVE[datW$siteN ==5], na.rm =TRUE),
+       col = "tomato3",
+       lwd = 3)
+#Adding SD Below
+abline(v = mean(datW$TAVE[datW$siteN == 5], na.rm = TRUE)
+       -sd(datW$TAVE[datW$siteN == 5], na.rm = TRUE),
+       col = "tomato3",
+       lty = 3,
+       lwd = 3)
+#Adding SD Above
+abline(v = mean(datW$TAVE[datW$siteN == 5],na.rm=TRUE)
+       + sd(datW$TAVE[datW$siteN == 5],na.rm=TRUE), 
+       col = "tomato3", 
+       lty = 3,
+       lwd = 3)
+
 
 ########CONTINUING ON###########
 
@@ -186,6 +304,7 @@ help(dnorm)
 #pnorm returns vector for probability below q
 #qnorm returns the value associated wtih a possibility
 
+
 #probability of all average temperature below 0
 pnorm(0,
       mean(datW$TAVE[datW$siteN == 1], na.rm = TRUE),
@@ -221,8 +340,8 @@ qnorm(0.95,
 #current threshold for extreme high temperatures?
 
 ##### QUESTION 7 ######################
-#Make ah ist of daily precipitation for Aberdeen. This is an example of a data distribution
-#that isn't normla. Look up exponential, beta, and gamma distribution using the internet.
+#Make a hist of daily precipitation for Aberdeen. This is an example of a data distribution
+#that isn't normal. Look up exponential, beta, and gamma distribution using the internet.
 #Look at the range of values these descriptions can describe. Would any of these
 #distributions describe the shape of daily precipitation data?
 
