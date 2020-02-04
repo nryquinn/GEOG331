@@ -424,9 +424,9 @@ qnorm(0.95,
 new.mean = mean(datW$TAVE[datW$siteN ==1], na.rm = TRUE) + 4
 
 #finding how often
-qnorm(0.95,
-      new.mean,
-      sd(datW$TAVE[datW$siteN == 1], na.rm = TRUE))
+1-pnorm(18.51026,
+new.mean,
+sd(datW$TAVE[datW$siteN == 1], na.rm = TRUE))
 
 
 
