@@ -42,7 +42,7 @@ print(datW[1,])
 
 #####Question 3#####
 
-#What is the deifference between skip and nrows in these two read.csv commands?
+#What is the difference between skip and nrows in these two read.csv commands?
 #What does header=FALSE also do?
 
 #####Continuing On######
@@ -74,3 +74,105 @@ length(which(is.na(datW$precipitation)))
 length(which(is.na(datW$soil.moisture)))
 #soil moisture
 length(which(is.na(datW$soil.temp)))
+
+#make aplot with filled in points (using pch)
+#line lines
+plot(datW$DD, datW$soil.moisture, pch = 19, type = "b", xlab = "Day of Year",
+     ylab = "Soil Moisture (cm3 water per cm3 soil")
+
+#Making a plot for air temperature
+plot(datW$DD, datW$air.temperature, pch = 19, type = "b", xlab = "Day of Year",
+     ylab = "Air Temperature (degrees C)")
+
+#I'm going to make a new column to work with that indicates that I am conducting QAQC
+#because overwriting values should be done cautiously and can lead to confusing issues.
+#It can be particularily confusing when you are just learning R.
+#Here I'm using the ifelse function
+#the first argument is a logical statement to be evaluated as true or false on a vector
+#the second argument is the value that my air.tempQ1 column will be given if the statement
+#is true. The last value is the value that will be given to air.tempQ1 if the statement is false.
+#In this case it is just given the air temperature value
+datW$air.tempQ1 <- ifelse(datW$air.temperature < 0, NA, datW$air.temperature)
+
+#check extreme range and throughout percentiles
+quantile(datW$air.tempQ1)
+#looking at days with low air temp
+datW[datW$air.tempQ1 < 8,]
+#looking at days with high air temp
+datW[datW$air.tempQ1 > 33,]
+
+##### Question 4#####
+#Are the extreme high and low values in this dataset reliably measured by the sensor?
+#Explain your answer
+
+#####Continuing On#####
+
+#plot precipitation and lighting strikes on same plot
+
+#normalize lightning strikes to match precipitation
+lightscale <- (max(datW$precipitation)/max(datW$lightning.acvitivy)) * datW$lightning.acvitivy
+
+#make the plot with precipitation and lightning activity marked
+#make it empty to start and add in features
+plot(datW$DD , datW$precipitation, xlab = "Day of Year", ylab = "Precipitation & Lightning",
+     type = "n")
+
+#plot precipitation points only when there is precip.
+#Make the points semi transparent
+points(datW$DD[datW$precipitation > 0], datW$precipitation[datW$precipitation > 0],
+       col = rgb(95/255, 158/255, 160/255, 0.5), pch = 15)
+
+#plot lightning points only when there is lightning
+points(datW$DD[lightscale > 0], lightscale[lightscale > 0],
+       col = "tomato3", pch = 19)
+
+#####Question 5#####
+#The variable lightscale used to graph lightning values on the same plot as precipitation
+#is not in the datW dataframe. Explain why you can still use it to subset values in datW.
+#Provide evidence for your answer by creating a test that uses your assert function from part 1
+
+assert()
+nrow(datW)
+#Creating lightscale as a dataframe to count the number of rows
+#Number of rows is the number of observations
+lightscale1 = as.data.frame(lightscale)
+nrow(lightscale1)
+assert((nrow(datW)) == (nrow(lightscale1)), "error: unequal values")
+
+#####Continuing On#####
+
+#filter out storms in wind and air temperature measurements
+#filter all values with lightning that coincides with rainfall greater than 2mm or only rainfall over 5 mm
+#create a new airtemp column
+datW$airtempQ2 <- ifelse(datW$precipitation >= 2 & datW$lightning.acvitivy > 0, NA,
+                         ifelse(datW$precipitation > 5, NA, datW$air.tempQ1))
+
+#####Question 6######
+#Repeat the code above to remove suspect measurements from wind speed measurements
+#Create a test using assert to verify that this filtered the data as expected.
+#Describe your outcome. Include a plot with both lines and points of windspeed with new data.
+datW$wind.speed.Q1 <- ifelse(datW$precipitation >= 2 & datW$lightning.acvitivy > 0, NA,
+                             ifelse(datW$precipitation > 5, NA, datW$wind.speed))
+head(datW$wind.speed.Q1)
+assert((is.na(datW$wind.speed.Q1)) == (is.na(datW$wind.speed)), "error: Unequal Values")
+
+#####Question 7#####
+#Check that the soil temperature and moisture measurements are reliable in the days
+#leading up to the soil sensor outage. Explain your reasoning and show all code.
+#Keep in mind that precipitation and air temperature can be used to help provide context
+
+#Note: soil moisture/temp measurements were tampered with in mid-July
+
+#####Question 8#####
+#The researchers requested a table with the average air temperature, wind speed, soil moisture,
+#and soil temperature for their study period. They would also like the total precipitation.
+#Indicate how many observations went into these calculations and the time period of measurement.
+#Report your findings with the correct number of decimal places that is within the sensor error
+
+#####Question 9######
+#Make four plots of soil moisture, air temperature, soil temperature, and precipitation throughout
+#all observations in the study period. Use the same x axis range for each plot. In a few sentences, 
+#briefly describe trends in the data.
+
+#####Question 10#####
+#Copy the URL of your Rscript in your GitHub Repository
