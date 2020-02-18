@@ -159,20 +159,20 @@ length(datW$airtempQ2[is.na(datW$airtempQ2)])
 assert(length(datW$wind.speed.Q1[is.na(datW$wind.speed.Q1)]) == length(datW$airtempQ2[is.na(datW$airtempQ2)]) , "error: Unequal Values")
 
 plot(datW$DD, datW$wind.speed.Q1, pch = 19, type = "b", xlab = "Day of Year",
-     lab = "Wind Speed (m/s)")
+     ylab = "Wind Speed (m/s)")
 
 #####Question 7#####
 #Check that the soil temperature and moisture measurements are reliable in the days
 #leading up to the soil sensor outage. Explain your reasoning and show all code.
 #Keep in mind that precipitation and air temperature can be used to help provide context
-
+par(mfrow=c(1,1))
 plot(datW$DD, datW$soil.moisture, pch = 19, type = "b", xlab = "Day of Year",
-     ylab = "Soil Moisture (mm)", xlim = c(180,195))
+     ylab = "Soil Moisture (mm)", xlim = c(185,195))
 points(datW$DD[datW$DD < 192.8750], datW$precipitation[datW$DD < 192.8750], pch = 19, col = "tomato3")
 
 
 plot(datW$DD, datW$soil.temp, pch = 19, type = "b", xlab = "Day of Year",
-     ylab = "Soil Temperature (degrees C", xlim = c(190,195), ylim = c(10, 30))
+     ylab = "Soil Temperature (degrees C", xlim = c(185,195), ylim = c(10, 30))
 points(datW$DD[datW$DD < 192.8750], datW$airtempQ2[datW$DD < 192.8750], pch = 19, col = "tomato3")
 
 #Note: soil moisture/temp measurements were tampered with in mid-July
