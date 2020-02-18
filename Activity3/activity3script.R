@@ -158,10 +158,22 @@ length(datW$wind.speed.Q1[is.na(datW$wind.speed.Q1)])
 length(datW$airtempQ2[is.na(datW$airtempQ2)])
 assert(length(datW$wind.speed.Q1[is.na(datW$wind.speed.Q1)]) == length(datW$airtempQ2[is.na(datW$airtempQ2)]) , "error: Unequal Values")
 
+plot(datW$DD, datW$wind.speed.Q1, pch = 19, type = "b", xlab = "Day of Year",
+     lab = "Wind Speed (m/s)")
+
 #####Question 7#####
 #Check that the soil temperature and moisture measurements are reliable in the days
 #leading up to the soil sensor outage. Explain your reasoning and show all code.
 #Keep in mind that precipitation and air temperature can be used to help provide context
+
+plot(datW$DD, datW$soil.moisture, pch = 19, type = "b", xlab = "Day of Year",
+     ylab = "Soil Moisture (mm)", xlim = c(180,195))
+points(datW$DD[datW$DD < 192.8750], datW$precipitation[datW$DD < 192.8750], pch = 19, col = "tomato3")
+
+
+plot(datW$DD, datW$soil.temp, pch = 19, type = "b", xlab = "Day of Year",
+     ylab = "Soil Temperature (degrees C", xlim = c(190,195), ylim = c(10, 30))
+points(datW$DD[datW$DD < 192.8750], datW$airtempQ2[datW$DD < 192.8750], pch = 19, col = "tomato3")
 
 #Note: soil moisture/temp measurements were tampered with in mid-July
 
@@ -172,17 +184,64 @@ assert(length(datW$wind.speed.Q1[is.na(datW$wind.speed.Q1)]) == length(datW$airt
 #Report your findings with the correct number of decimal places that is within the sensor error
 
 
-Mean.Air.Temp <- mean(datW$airtempQ2,na.rm = TRUE)
-Mean.Wind.Speed <- mean(datW$wind.speed.Q1, na.rm = TRUE)
-Mean.Soil.Moisture <- mean(datW$soil.moisture, na.rm = TRUE)
-Mean.Soil.Temp <- mean(datW$soil.temp, na.rm = TRUE)
-Total.Precipitation <- sum(datW$precipitation)
+Mean.Air.Temp <- c(mean(datW$airtempQ2,na.rm = TRUE))
+Mean.Wind.Speed <- c(mean(datW$wind.speed.Q1, na.rm = TRUE))
+Mean.Soil.Moisture <- c(mean(datW$soil.moisture, na.rm = TRUE))
+Mean.Soil.Temp <- c(mean(datW$soil.temp, na.rm = TRUE))
+Total.Precipitation <- c(sum(datW$precipitation))
 
+#Rounding
+#Air Temp has resolution of 0.1 degrees Celsius
+Rounded.Mean.Air.Temp <- round(Mean.Air.Temp, 1)
+#Wind Speed has resolution of 0.01 m/s
+Rounded.Mean.Wind.Speed <- round(Mean.Wind.Speed,2)
+#Soil Moisture has resolution of 0.0008 m3/m3
+Rounded.Mean.Soil.Moisture <- round(Mean.Soil.Moisture,2)
+#Soil Temperature has resolution of 0.1 degree celsius
+Rounded.Mean.Soil.Temp <- round(Mean.Soil.Temp, 1)
+#Precipitation has resolution of 0.017 mm
+Rounded.Total.Precipitation <- round(Total.Precipitation, 3)
+
+
+Mydata <- data.frame(Rounded.Mean.Air.Temp, Rounded.Mean.Wind.Speed, Rounded.Mean.Soil.Moisture, Rounded.Mean.Soil.Temp, Rounded.Total.Precipitation)
+names(Mydata)<- c("Mean Air Temperature (degrees Celsius)", "Mean Wind Speed (m/s)", "Mean Soil Moisture (m3/m3)", "Mean Soil Temperature (degrees Celsius",
+                  "Total Precipitation (mm)")
+
+#finding lengths
+length.airtemp = c(length(datW$air.temperature) - length(datW$airtempQ2[is.na(datW$airtempQ2)]))
+length.windspeed = c(length(datW$wind.speed) - length(datW$wind.speed.Q1[is.na(datW$wind.speed.Q1)]))
+length.soilmoisture = c(length(datW$soil.moisture))
+length.soiltemp = c(length(datW$soil.temp))
+length.precip = c(length(datW$precipitation))
+
+LengthData <- data.frame(length.airtemp, length.windspeed, length.soilmoisture, length.soiltemp, length.precip)
+names(LengthData) <- c("Mean Air Temperature (degrees Celsius)", "Mean Wind Speed (m/s)", "Mean Soil Moisture (m3/m3)", "Mean Soil Temperature (degrees Celsius",
+                       "Total Precipitation (mm)")
+
+
+#Time Period
+TimePeriod <- data.frame("6/12/18 - 7/26/18", "6/12/18 - 7/26/18", "6/12/18 - 7/11/18", "6/12/18 - 7/11/18", "6/12/18 - 7/26/18")
+names(TimePeriod) <- c("Mean Air Temperature (degrees Celsius)", "Mean Wind Speed (m/s)", "Mean Soil Moisture (m3/m3)", "Mean Soil Temperature (degrees Celsius",
+                       "Total Precipitation (mm)")
+
+#Binding Together
+FinalData <- rbind(Mydata, LengthData, TimePeriod)
+rownames(FinalData) <- c("Data Requested", "Number of Observations", "Time Period")
 
 #####Question 9######
 #Make four plots of soil moisture, air temperature, soil temperature, and precipitation throughout
 #all observations in the study period. Use the same x axis range for each plot. In a few sentences, 
 #briefly describe trends in the data.
+
+par(mfrow = c(4,1))
+plot(datW$DD, datW$soil.moisture, pch = 19, type = "b", xlab = "Day of Year",
+     ylab = "Soil Moisture (mm)")
+plot(datW$DD, datW$airtempQ2, pch = 19, type = "b", xlab = "Day of Year",
+     ylab = "Air Temperature (degrees C)")
+plot(datW$DD, datW$soil.temp, pch = 19, type = "b", xlab = "Day of Year",
+     ylab = "Soil Temperature (degrees C)")
+plot(datW$DD, datW$precipitation, pch = 19, type = "b", xlab = "Day of Year",
+     ylab = "Precipitation (mm)")
 
 #####Question 10#####
 #Copy the URL of your Rscript in your GitHub Repository
