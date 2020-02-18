@@ -104,6 +104,17 @@ datW[datW$air.tempQ1 > 33,]
 ##### Question 4#####
 #Are the extreme high and low values in this dataset reliably measured by the sensor?
 #Explain your answer
+quantile(datW$solar.radiation)
+quantile(datW$precipitation)
+quantile(datW$lightning.acvitivy)
+quantile(datW$lightning.distance)
+quantile(datW$wind.dir)
+quantile(datW$wind.speed.Q1, na.rm = TRUE)
+quantile(datW$gust.speed)
+quantile(datW$atmospheric.pressure)
+quantile(datW$soil.moisture, na.rm = TRUE)
+quantile(datW$soil.temp, na.rm = TRUE)
+
 
 #####Continuing On#####
 
@@ -234,14 +245,14 @@ rownames(FinalData) <- c("Data Requested", "Number of Observations", "Time Perio
 #briefly describe trends in the data.
 
 par(mfrow = c(4,1))
-plot(datW$DD, datW$soil.moisture, pch = 19, type = "b", xlab = "Day of Year",
-     ylab = "Soil Moisture (mm)")
 plot(datW$DD, datW$airtempQ2, pch = 19, type = "b", xlab = "Day of Year",
      ylab = "Air Temperature (degrees C)")
 plot(datW$DD, datW$soil.temp, pch = 19, type = "b", xlab = "Day of Year",
      ylab = "Soil Temperature (degrees C)")
 plot(datW$DD, datW$precipitation, pch = 19, type = "b", xlab = "Day of Year",
      ylab = "Precipitation (mm)")
+plot(datW$DD, datW$soil.moisture, pch = 19, type = "b", xlab = "Day of Year",
+     ylab = "Soil Moisture (mm)")
 
 #####Question 10#####
 #Copy the URL of your Rscript in your GitHub Repository
