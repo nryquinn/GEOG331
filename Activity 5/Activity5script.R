@@ -208,20 +208,22 @@ hydroP <-datP[datP$doy >= 248 & datP$doy <250 & datP$year == 2011,]
 min(hydroD$discharge)
 
 #get minimum and maximum range of discharge to plot
-#go outside of the range so that it'se asy to see high/low values
+#go outside of the range so that it's easy to see high/low values
 #floor rounds down the integer
 yl <- floor(min(hydroD$discharge))-1
-#ceiling rounds up to the integer
+#celing rounds up to the integer
 yh <- ceiling(max(hydroD$discharge))+1
 #minimum and maximum range of precipitation to plot
-pl <-0
-pm <- ceiling(max(hydroP$HPCP)) +0.5
-#scale precipitation to fit on the ?
-hydroP$pscale <-(((yh-yl)/(pm-pl))*hydroP$HPCP) + yl
+pl <- 0
+pm <-  ceiling(max(hydroP$HPCP))+.5
+#scale precipitation to fit on the 
+hydroP$pscale <- (((yh-yl)/(pm-pl)) * hydroP$HPCP) + yl
+
 
 #plot it
 par(mai=c(1,1,1,1))
 plot(hydroD$decDay,
+     hydroD$discharge,
      type="l",
      ylim = c(yl,yh),
      lwd=2,
@@ -234,3 +236,30 @@ for(i in 1:nrow(hydroP)){
           c(yl,hydroP$pscale[i],hydroP$pscale[i],yl),
           col=rgb(0.392, 0.584, 0.929,.2), border=NA)
 }
+
+#####Question 8#####
+#Choose another day to make a second hydrograph during the winter.
+#Explain how you chose a time period. How do the two hydrographs
+#compare? Are there any limitatios in interpreting the hydrograph
+#given we only have hourly precipitiation? Why do you think spikes in
+#streamflow exist without rain?
+
+######Continuing On######
+library(ggplot2)
+#specify year as a factor
+datD$yearPlot <-as.factor(datD$year)
+#make a boxplot
+ggplot(data = datD, aes(yearPlot,discharge)) +
+  geom_boxplot()
+
+#make a violin plot
+ggplot(data= datD, aes(yearPlot,discharge)) +
+  geom_violin()
+
+#####Question 9#####
+#Make a violin plot by season for 2016 and 2017 separately.
+#Be sure the plots are aesthetically pleaisng and properly labelled.
+#Describe differences in streamflow discharge between seasons and years.
+
+#####Question 10#####
+#Copy and paste the GitHub URL for your Rscript here
