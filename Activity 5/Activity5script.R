@@ -45,8 +45,8 @@ datD$hour <- hour(timesD) + (minute(timesD)/60)
 #get full decimal time
 datD$decDay <- datD$doy + (datD$hour/24)
 #calculate a decimal year, but account for leap year
-datD$decYear <-ifelse(leap_year(datD$year), datD$year + (datD$decDay/366),
-                      datD$year  + (datD$decDay/365))
+datD$decYear <-ifelse(leap_year(datD$year), datD$year + ((datD$doy-1)/366),
+                      datD$year  + ((datD$doy-1)/365))
 #calculate times for dat                       
 datP$hour <- hour(dateP ) + (minute(dateP )/60)
 #get full decimal time
@@ -218,7 +218,11 @@ polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
         col=rgb(0.392, 0.584, 0.929,.2), #color that is semi-transparent
         border=NA#no border
 )
-lines(datD$discharge[datD$year == 2017], col = "tomato3", lwd = 2)
+
+datD2017 <- (datD[datD$year == 2017,])
+DailyDischarge2017 <- aggregate(datD2017$discharge, by = list(datD2017$doy), FUN = "mean")
+
+lines(DailyDischarge2017, col = "tomato3", lwd = 1.5)
 axis(1, seq(0,360, by=30), #tick intervals
      lab=seq(0,12, by=1)) #tick labels
 axis(2, seq(0,100, by=20),
@@ -235,10 +239,17 @@ legend("topright", c("mean", "1 standard deviation", "2017"), #legend items
 #this plot more closely , why do you think median and quartiles might better 
 #represent typical conditions for streamflow discharge compared to the mean and sd?
 
+#streamflow in 2017 appears to follow the trend of the mean; however, it does appear to have larger extremes such as in between months 2 and 3, as well as
+#in the spikes between months 3/4, month 6, and month 10. In most places it falls within the SD, at least on the lower end, with some outliers.
+
 #####Question 7#####
 #create a dataframe that indicates what days have a full 24 hours of precipitation
 #measurements. Make a plot of all discharge measurements and symbolize the days
 #that have all precipitation measurements available. Be sure to include all labels.
+
+
+
+
 
 #####Continuing On#####
 
