@@ -3,6 +3,8 @@
 #to influence streamflow? Would there be times taht you might expect higher flow
 #than would be typical for a given amount of rain in the drainage basin?
 
+#look up more info
+
 #####Continuing On#####
 
 #load lubridate
@@ -56,7 +58,10 @@ datP$decYear <- ifelse(leap_year(datP$year),datP$year + (datP$decDay/366),
 #####Question 2######
 #Explain how decimal year is calculated and how leap year is accounted for.
 #What do the results of the leap_year function look like?
+leap_year(datP$year)
 
+#Decimal year is calculated by ... (look up)
+#The leap year function evaluates all years in the dataframe and marks "true" or "false" if there is a leap year.
 #####Continuing on######
 
 #plot discharge
@@ -67,10 +72,17 @@ plot(datD$decYear, datD$discharge, type = "l", xlab = "Year",
 #How many observations are in the stream flow and precipitation data?
 #What is the frequency of the observations for each data type?
 
+length(datD$discharge)
+#there are 39378 observations
+#measurements are taken every 15 minutes
+
+
 #####Question 4#####
 #Look up the documentation on the expression function and explain what
 #expression(paste()) in the plot argument did. Are there any issues with 
 #this default plot formatting and labels? How does resizing the plot affect these issues?
+
+#idk
 
 ######Continuing On#####
 
@@ -167,7 +179,7 @@ plot(aveF$doy,aveF$dailyAve,
      ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
      lwd=2,
      ylim=c(0,90),
-     xaxs="i", yaxs ="i",#remove gaps from axes
+     xaxis="i", yaxis ="i",#remove gaps from axes
      axes=FALSE)#no axes
 polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
         c(aveF$dailyAve-sdF$dailySD,rev(aveF$dailyAve+sdF$dailySD)),#ycoord
@@ -187,8 +199,36 @@ legend("topright", c("mean", "1 standard deviation"), #legend items
 
 ######Question 5#####
 #Add a line that shows observations for 2017 onto this graph of the average.
-#You may have toa djust the axes limits. Change the x axis label so that they show
+#You may have to adjust the axes limits. Change the x axis label so that they show
 #each month instead of doy. Make the 2017 line a different color than current colors in your plot.
+
+#bigger margins
+par(mai=c(1,1,1,1))
+#make plot
+plot(aveF$doy,aveF$dailyAve, 
+     type="l", 
+     xlab="Month", 
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
+     lwd=2,
+     ylim=c(0,100),
+     xaxs="i", yaxs ="i",#remove gaps from axes
+     axes=FALSE)#no axes
+polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
+        c(aveF$dailyAve-sdF$dailySD,rev(aveF$dailyAve+sdF$dailySD)),#ycoord
+        col=rgb(0.392, 0.584, 0.929,.2), #color that is semi-transparent
+        border=NA#no border
+)
+lines(datD$discharge[datD$year == 2017], col = "tomato3", lwd = 2)
+axis(1, seq(0,360, by=30), #tick intervals
+     lab=seq(0,12, by=1)) #tick labels
+axis(2, seq(0,100, by=20),
+     seq(0,100, by=20),
+     las = 2)#show ticks at 90 degree angle
+legend("topright", c("mean", "1 standard deviation", "2017"), #legend items
+       lwd = c(2,NA), #lines
+       col = c("black", rgb(0.392,0.584,0.929,0.2), "tomato3"),#colors
+       pch=c(NA,15),#symbols
+       bty="n")#no legend border
 
 #####Question 6#####
 #Describe the trends in streamflow in 2017 and the mean/sd. After looking at
