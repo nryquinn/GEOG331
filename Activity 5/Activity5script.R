@@ -11,13 +11,18 @@
 library(lubridate)
 
 #reading in the data
-datH <- read.csv("y:\\Data\\activities\\a05\\stream_flow_data.csv",
+datH <- read.csv("/Users/Nick 1/Documents/GEOG331/Activity 5/stream_flow_data.csv",
                  na.strings = c("Eqp"))
 head(datH)
 
+#change back to datH <- read.csv("y:\\Data\\activities\\a05\\stream_flow_data.csv",
+                #na.strings = c("Eqp"))
+
 #reading in precipitation data
-datP <- read.csv("y:\\Data\\activities\\a05\\2049867.csv")
+datP <- read.csv("/Users/Nick 1/Documents/GEOG331/Activity 5/2049867.csv")
 head(datP)
+
+#change back to datP <- read.csv("y:\\Data\\activities\\a05\\2049867.csv")
 
 #Only use most reliable measurements
 datD <-datH[datH$discharge.flag == "A", ]
@@ -247,8 +252,33 @@ legend("topright", c("mean", "1 standard deviation", "2017"), #legend items
 #measurements. Make a plot of all discharge measurements and symbolize the days
 #that have all precipitation measurements available. Be sure to include all labels.
 
+#aggregating to only show desired variables
+Agg_Precip<-aggregate(datP$hour, by=list(datP$doy,datP$year), length)
+colnames(Agg_Precip) <- c("doy","year","HourCount")
+#aggregating to hours which equal 24
+Full24<-Agg_Precip[which(Agg_Precip$HourCount == 24),]
 
 
+par(mai=c(1,1,1,1))
+#plotting discharge
+plot(datD$decYear,datD$discharge,     
+     type="l", 
+     xlab="Year", 
+     ylab=expression(paste("Discharge ft"^"3 ","sec"^"-1")),
+     lwd=2)
+
+#Creating decimal year for Full24 so as to add to plot
+Full24$decYear <- ifelse(leap_year(Full24$year),Full24$year + ((Full24$doy-1)/366),
+                          Full24$year + ((Full24$doy-1)/365))
+
+#visualizing days with 24 hours of measurements
+points(Full24$decYear, y=rep(0,length(Full24$decYear)), pch=19, col="tomato3")
+
+legend("topleft", c("discharge","24 hours of precip data"), #adding legend items
+       lwd=c(2,NA),#lines
+       col=c("black","tomato3"), #signifying colors
+       pch=c(NA,19),
+       bty="n")
 
 
 #####Continuing On#####
@@ -295,6 +325,41 @@ for(i in 1:nrow(hydroP)){
 #given we only have hourly precipitiation? Why do you think spikes in
 #streamflow exist without rain?
 
+hydroD2 <-datD[datD$doy >= 32 & datD$doy <34 & datD$year == 2008,]
+hydroP2 <-datP[datP$doy >= 32 & datP$doy <34 & datP$year == 2008,]
+min(hydroD2$discharge)
+
+#get minimum and maximum range of discharge to plot
+#go outside of the range so that it's easy to see high/low values
+#floor rounds down the integer
+yl2 <- floor(min(hydroD2$discharge))-1
+#celing rounds up to the integer
+yh2 <- ceiling(max(hydroD2$discharge))+1
+#minimum and maximum range of precipitation to plot
+pl2 <- 0
+pm2 <- ceiling(max(hydroP2$HPCP))+.5
+#scale precipitation to fit on the 
+hydroP2$pscale <- (((yh2-yl2)/(pm2-pl2)) * hydroP2$HPCP) + yl2
+
+
+#plot it
+par(mai=c(1,1,1,1))
+plot(hydroD2$decDay,
+     hydroD2$discharge,
+     type="l",
+     ylim = c(yl2,yh2),
+     lwd=2,
+     xlab="Day of Year",
+     ylab = expression(paste("Discharge ft"^"3 ","sec"^"-1")))
+#add bars to indicate precipitation
+for(i in 1:nrow(hydroP2)){
+  polygon(c(hydroP2$decDay[i]-0.017,hydroP2$decDay[i]-0.017,
+            hydroP2$decDay[i]+0.017,hydroP2$decDay[i]+0.017),
+          c(yl,hydroP2$pscale[i],hydroP2$pscale[i],yl),
+          col=rgb(0.392, 0.584, 0.929,.2), border=NA)
+}
+
+
 ######Continuing On######
 library(ggplot2)
 #specify year as a factor
@@ -311,6 +376,7 @@ ggplot(data= datD, aes(yearPlot,discharge)) +
 #Make a violin plot by season for 2016 and 2017 separately.
 #Be sure the plots are aesthetically pleaisng and properly labelled.
 #Describe differences in streamflow discharge between seasons and years.
+
 
 #####Question 10#####
 #Copy and paste the GitHub URL for your Rscript here
