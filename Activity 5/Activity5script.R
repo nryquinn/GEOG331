@@ -3,7 +3,6 @@
 #to influence streamflow? Would there be times taht you might expect higher flow
 #than would be typical for a given amount of rain in the drainage basin?
 
-#look up more info
 
 #####Continuing On#####
 
@@ -11,18 +10,17 @@
 library(lubridate)
 
 #reading in the data
-datH <- read.csv("/Users/Nick 1/Documents/GEOG331/Activity 5/stream_flow_data.csv",
+datH <- read.csv("y:\\Data\\activities\\a05\\stream_flow_data.csv",
                  na.strings = c("Eqp"))
+#observe data
 head(datH)
 
-#change back to datH <- read.csv("y:\\Data\\activities\\a05\\stream_flow_data.csv",
-                #na.strings = c("Eqp"))
 
 #reading in precipitation data
-datP <- read.csv("/Users/Nick 1/Documents/GEOG331/Activity 5/2049867.csv")
-head(datP)
+datP <- read.csv("y:\\Data\\activities\\a05\\2049867.csv")
 
-#change back to datP <- read.csv("y:\\Data\\activities\\a05\\2049867.csv")
+#observe data
+head(datP)
 
 #Only use most reliable measurements
 datD <-datH[datH$discharge.flag == "A", ]
@@ -65,8 +63,6 @@ datP$decYear <- ifelse(leap_year(datP$year),datP$year + (datP$decDay/366),
 #What do the results of the leap_year function look like?
 leap_year(datP$year)
 
-#Decimal year is calculated by ... (look up)
-#The leap year function evaluates all years in the dataframe and marks "true" or "false" if there is a leap year.
 #####Continuing on######
 
 #plot discharge
@@ -77,17 +73,16 @@ plot(datD$decYear, datD$discharge, type = "l", xlab = "Year",
 #How many observations are in the stream flow and precipitation data?
 #What is the frequency of the observations for each data type?
 
-length(datD$discharge)
-#there are 39378 observations
-#measurements are taken every 15 minutes
-
+#using length to determine the amount of obs.
+length(datP)
+length(datD)
+length(datH)
 
 #####Question 4#####
 #Look up the documentation on the expression function and explain what
 #expression(paste()) in the plot argument did. Are there any issues with 
 #this default plot formatting and labels? How does resizing the plot affect these issues?
 
-#idk
 
 ######Continuing On#####
 
@@ -227,9 +222,12 @@ polygon(c(aveF$doy, rev(aveF$doy)),#x coordinates
 datD2017 <- (datD[datD$year == 2017,])
 DailyDischarge2017 <- aggregate(datD2017$discharge, by = list(datD2017$doy), FUN = "mean")
 
+#creating tick marks
+
+Months = c(0,"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec") #Creating label for ticks
 lines(DailyDischarge2017, col = "tomato3", lwd = 1.5)
 axis(1, seq(0,360, by=30), #tick intervals
-     lab=seq(0,12, by=1)) #tick labels
+     lab=Months) #tick labels
 axis(2, seq(0,100, by=20),
      seq(0,100, by=20),
      las = 2)#show ticks at 90 degree angle
@@ -237,7 +235,7 @@ legend("topright", c("mean", "1 standard deviation", "2017"), #legend items
        lwd = c(2,NA), #lines
        col = c("black", rgb(0.392,0.584,0.929,0.2), "tomato3"),#colors
        pch=c(NA,15),#symbols
-       bty="n")#no legend border
+       bty="n") #no legend border
 
 #####Question 6#####
 #Describe the trends in streamflow in 2017 and the mean/sd. After looking at
@@ -321,7 +319,7 @@ for(i in 1:nrow(hydroP)){
 #####Question 8#####
 #Choose another day to make a second hydrograph during the winter.
 #Explain how you chose a time period. How do the two hydrographs
-#compare? Are there any limitatios in interpreting the hydrograph
+#compare? Are there any limitations in interpreting the hydrograph
 #given we only have hourly precipitiation? Why do you think spikes in
 #streamflow exist without rain?
 
@@ -376,7 +374,62 @@ ggplot(data= datD, aes(yearPlot,discharge)) +
 #Make a violin plot by season for 2016 and 2017 separately.
 #Be sure the plots are aesthetically pleaisng and properly labelled.
 #Describe differences in streamflow discharge between seasons and years.
+help("geom_violin")
 
+#load package
+library(ggplot2)
+
+#doy of seasons in 2016
+#First day of winter = 12/21, doy = 355
+#first day of spring = 3/20, doy = 80
+#First day of summer = 6/20, doy = 172
+#first day of fall = 9/22, doy = 266
+
+#creating dataframe for 2016
+datD2016 = datD[datD$year == 2016,]
+#adding in column for seasons
+datD2016$season <- ifelse(datD2016$doy < 80, "winter",
+                          ifelse(datD2016$doy < 172, "spring",
+                                 ifelse(datD2016$doy < 266, "fall",
+                                        ifelse(datD2016$doy < 355, "summer", "winter"))))
+#making seasons a factor
+datD2016$season_plot <- as.factor(datD2016$season)
+
+#plotting it
+ggplot(data= datD2016, aes(season_plot,discharge, color = season_plot)) +
+  geom_violin() + 
+  labs(title = "Discharge by Season in 2016",x = "Season", y = expression(paste("Discharge ft"^"3 ","sec"^"-1"))) +
+  theme(panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+
+
+  
+#Repeat for 2017
+#doy of seasons in 2017
+#First day of winter = 12/21, doy = 354
+#first day of spring = 3/20, doy = 79
+#First day of summer = 6/21, doy = 172
+#first day of fall = 9/22, doy = 265
+
+#creating dataframe for 2016
+datD2017_2 = datD[datD$year == 2017,]
+#adding in column for seasons
+datD2017_2$season <- ifelse(datD2017_2$doy < 79, "winter",
+                          ifelse(datD2017_2$doy < 172, "spring",
+                                 ifelse(datD2017_2$doy < 265, "fall",
+                                        ifelse(datD2017_2$doy < 354, "summer", "winter"))))
+#making seasons a factor
+datD2017_2$season_plot <- as.factor(datD2017_2$season)
+
+#plotting it
+ggplot(data= datD2017_2, aes(season_plot,discharge, color = season_plot)) +
+  geom_violin() + 
+  labs(title = "Discharge by Season in 2017", x = "Season", y = expression(paste("Discharge ft"^"3 ","sec"^"-1"))) +
+  theme(panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
 
 #####Question 10#####
 #Copy and paste the GitHub URL for your Rscript here
